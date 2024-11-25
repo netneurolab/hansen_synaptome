@@ -1,0 +1,163 @@
+ID_ALLEN,ACRO,NAME,MACRO,label,SNR
+184,FRP,Frontal Pole,ISO,101,49.66375684
+985,MOp,Primary motor area,ISO,102,46.45213555
+993,MOs,Secondary motor area,ISO,103,44.8424644
+353,SSp-n,"Primary somatosensory area, nose",ISO,104,41.48430618
+329,SSp-bfd,"Primary somatosensory area, barrel field",ISO,105,49.63691971
+337,SSp-ll,"Primary somatosensory area, lower limb",ISO,106,52.12172312
+345,SSp-m,"Primary somatosensory area, mouth",ISO,107,33.09032338
+369,SSp-ul,"Primary somatosensory area, upper limb",ISO,108,50.87331165
+361,SSp-tr,"Primary somatosensory area, trunk",ISO,109,56.50636718
+182305689,SSp-un,"Primary somatosensory area, unassigned",ISO,110,51.16020328
+378,SSs,Supplemental somatosensory area,ISO,111,34.38807792
+1057,GU,Gustatory areas,ISO,112,29.9224909
+677,VISC,Visceral area,ISO,113,27.21044429
+1011,AUDd,Dorsal auditory area,ISO,114,32.58696004
+1002,AUDp,Primary auditory area,ISO,115,27.75179557
+1027,AUDpo,Posterior auditory area,ISO,116,29.9129417
+1018,AUDv,Ventral auditory area,ISO,117,29.04337508
+402,VISal,Anterolateral visual area,ISO,118,46.66033672
+394,VISam,Anteromedial visual area,ISO,119,54.97034392
+409,VISl,Lateral visual area,ISO,120,39.04519234
+385,VISp,Primary visual area,ISO,121,47.42045713
+425,VISpl,Posterolateral visual area,ISO,122,43.78604358
+312782574,VISli,Laterointermediate area,ISO,124,32.16880184
+312782628,VISpor,Postrhinal area,ISO,125,33.10741004
+39,ACAd,"Anterior cingulate area, dorsal part",ISO,126,56.64426561
+48,ACAv,"Anterior cingulate area, ventral part",ISO,127,50.51393166
+972,PL,Prelimbic area,ISO,128,50.492761
+44,ILA,Infralimbic area,ISO,129,44.11326028
+714,ORB,Orbital area,ISO,130,43.55264883
+104,AId,"Agranular insular area, dorsal part",ISO,131,34.31497663
+111,AIp,"Agranular insular area, posterior part",ISO,132,23.11558533
+119,AIv,"Agranular insular area, ventral part",ISO,133,34.30265438
+894,RSPagl,"Retrosplenial area, lateral agranular part",ISO,134,49.93157103
+879,RSPd,"Retrosplenial area, dorsal part",ISO,135,50.30803528
+886,RSPv,"Retrosplenial area, ventral part",ISO,136,52.01327374
+22,PTLp,Posterior parietal association areas,ISO,137,53.10809203
+541,TEa,Temporal association areas,ISO,138,28.36850959
+895,ECT,Ectorhinal area,ISO,140,27.77959132
+961,PIR,Piriform Area,OLF,141,22.99547551
+631,COA,Cortical amygdalar area,OLF,142,12.81721005
+788,PAA,Piriform-amygdalar area,OLF,143,17.11313426
+375,CA,Ammon's horn,HPF,145,40.91313174
+726,DG,Dentate gyrus,HPF,146,40.64673102
+19,IG,Induseum griseum,HPF,148,45.89368937
+909,ENT,Entorhinal area,HPF,149,33.66988035
+843,PAR,Parasubiculum,HPF,150,36.24611586
+1037,POST,Postsubiculum,HPF,151,48.18548087
+1084,PRE,Presubiculum,HPF,152,36.16219022
+502,SUB,Subiculum,HPF,153,44.95610379
+484682470,ProS,Prosubiculum,HPF,154,52.89405018
+589508447,HATA,Hippocampo-amygdalar transition area,HPF,155,20.9275251
+583,CLA,Claustrum,CTXsp,157,40.16078556
+942,EP,Endopiriform nucleus,CTXsp,158,30.13788612
+131,LA,Lateral amygdalar nucleus,CTXsp,159,31.48167364
+295,BLA,Basolateral amygdalar nucleus,CTXsp,160,23.76698133
+319,BMA,Basomedial amygdalar nucleus,CTXsp,161,23.86255365
+780,PA,Posterior amygdalar nucleus,CTXsp,162,18.10205837
+485,STRd,Striatum dorsal region,STR,163,41.1175392
+493,STRv,Striatum ventral region,STR,164,27.75223877
+275,LSX,Lateral septal complex,STR,165,41.1280126
+278,sAMY,Striatum-like amygdalar nuclei,STR,166,27.20452259
+818,PALd,"Pallidum, dorsal region",PAL,167,33.79986257
+835,PALv,"Pallidum, ventral region",PAL,168,29.5932015
+809,PALc,"Pallidum, caudal region",PAL,170,35.44894482
+637,VENT,Ventral group of the dorsal thalamus,TH,171,35.70075031
+1008,GENd,"Geniculate group, dorsal thalamus",TH,175,37.74971831
+138,LAT,Lateral group of the dorsal thalamus,TH,176,39.53461176
+239,ATN,Anterior group of the dorsal thalamus,TH,177,43.39547663
+444,MED,Medial group of the dorsal thalamus,TH,178,40.27837785
+571,MTN,Midline group of the dorsal thalamus,TH,179,40.99403705
+51,ILM,Intralaminar nuclei of the dorsal thalamus,TH,180,36.88189891
+262,RT,Reticular nucleus of the thalamus,TH,181,36.72044375
+1014,GENv,"Geniculate group, ventral thalamus",TH,182,34.84684794
+958,EPI,Epithalamus,TH,183,50.48728761
+157,PVZ,Periventricular zone,HY,184,34.23714976
+141,PVR,Periventricular region,HY,185,34.02046851
+467,MEZ,Hypothalamic medial zone,HY,186,30.67040225
+290,LZ,Hypothalamic lateral zone,HY,187,29.82596431
+339,MBsen,"Midbrain, sensory related",MID,189,43.04305444
+323,MBmot,"Midbrain, motor related",MID,190,37.05905493
+348,MBsta,"Midbrain, behavioral state related",MID,191,31.8037765
+184,FRP,Frontal Pole,ISO,1001,48.53583717
+985,MOp,Primary motor area,ISO,1002,44.34788001
+993,MOs,Secondary motor area,ISO,1003,44.26182523
+353,SSp-n,"Primary somatosensory area, nose",ISO,1004,43.30692267
+329,SSp-bfd,"Primary somatosensory area, barrel field",ISO,1005,50.09166905
+337,SSp-ll,"Primary somatosensory area, lower limb",ISO,1006,54.23113935
+345,SSp-m,"Primary somatosensory area, mouth",ISO,1007,35.89191769
+369,SSp-ul,"Primary somatosensory area, upper limb",ISO,1008,52.5035617
+361,SSp-tr,"Primary somatosensory area, trunk",ISO,1009,55.87182435
+182305689,SSp-un,"Primary somatosensory area, unassigned",ISO,1010,51.76109694
+378,SSs,Supplemental somatosensory area,ISO,1011,36.57259767
+1057,GU,Gustatory areas,ISO,1012,31.31997863
+677,VISC,Visceral area,ISO,1013,28.484474
+1011,AUDd,Dorsal auditory area,ISO,1014,37.0376154
+1002,AUDp,Primary auditory area,ISO,1015,29.68006413
+1027,AUDpo,Posterior auditory area,ISO,1016,33.72805102
+1018,AUDv,Ventral auditory area,ISO,1017,29.67355749
+402,VISal,Anterolateral visual area,ISO,1018,36.16985513
+394,VISam,Anteromedial visual area,ISO,1019,54.91669739
+409,VISl,Lateral visual area,ISO,1020,41.06510377
+385,VISp,Primary visual area,ISO,1021,40.37232013
+425,VISpl,Posterolateral visual area,ISO,1022,38.63161029
+312782574,VISli,Laterointermediate area,ISO,1024,39.10879469
+312782628,VISpor,Postrhinal area,ISO,1025,28.78469287
+39,ACAd,"Anterior cingulate area, dorsal part",ISO,1026,56.09004866
+48,ACAv,"Anterior cingulate area, ventral part",ISO,1027,50.66602603
+972,PL,Prelimbic area,ISO,1028,50.40679162
+44,ILA,Infralimbic area,ISO,1029,44.91053553
+714,ORB,Orbital area,ISO,1030,43.61093338
+104,AId,"Agranular insular area, dorsal part",ISO,1031,34.19472555
+111,AIp,"Agranular insular area, posterior part",ISO,1032,24.3762201
+119,AIv,"Agranular insular area, ventral part",ISO,1033,36.16674556
+894,RSPagl,"Retrosplenial area, lateral agranular part",ISO,1034,51.50898807
+879,RSPd,"Retrosplenial area, dorsal part",ISO,1035,49.32772153
+886,RSPv,"Retrosplenial area, ventral part",ISO,1036,52.04280207
+22,PTLp,Posterior parietal association areas,ISO,1037,50.10279261
+541,TEa,Temporal association areas,ISO,1038,32.48567091
+895,ECT,Ectorhinal area,ISO,1040,31.09772306
+961,PIR,Piriform Area,OLF,1041,24.62698176
+631,COA,Cortical amygdalar area,OLF,1042,10.71782822
+788,PAA,Piriform-amygdalar area,OLF,1043,15.05603673
+375,CA,Ammon's horn,HPF,1045,44.66616745
+726,DG,Dentate gyrus,HPF,1046,40.39574578
+19,IG,Induseum griseum,HPF,1048,48.73189375
+909,ENT,Entorhinal area,HPF,1049,31.0499048
+843,PAR,Parasubiculum,HPF,1050,36.28007277
+1037,POST,Postsubiculum,HPF,1051,48.90343606
+1084,PRE,Presubiculum,HPF,1052,39.0497112
+502,SUB,Subiculum,HPF,1053,43.94733125
+484682470,ProS,Prosubiculum,HPF,1054,50.14648086
+589508447,HATA,Hippocampo-amygdalar transition area,HPF,1055,23.17886009
+583,CLA,Claustrum,CTXsp,1057,40.03069582
+942,EP,Endopiriform nucleus,CTXsp,1058,29.58678896
+131,LA,Lateral amygdalar nucleus,CTXsp,1059,28.97130395
+295,BLA,Basolateral amygdalar nucleus,CTXsp,1060,24.86704015
+319,BMA,Basomedial amygdalar nucleus,CTXsp,1061,20.43251693
+780,PA,Posterior amygdalar nucleus,CTXsp,1062,15.82282114
+485,STRd,Striatum dorsal region,STR,1063,41.25042132
+493,STRv,Striatum ventral region,STR,1064,27.31310277
+275,LSX,Lateral septal complex,STR,1065,43.60353057
+278,sAMY,Striatum-like amygdalar nuclei,STR,1066,28.18622729
+818,PALd,"Pallidum, dorsal region",PAL,1067,34.44213512
+835,PALv,"Pallidum, ventral region",PAL,1068,29.11558453
+809,PALc,"Pallidum, caudal region",PAL,1070,34.68261193
+637,VENT,Ventral group of the dorsal thalamus,TH,1071,35.28978114
+1008,GENd,"Geniculate group, dorsal thalamus",TH,1075,37.51470095
+138,LAT,Lateral group of the dorsal thalamus,TH,1076,37.91769689
+239,ATN,Anterior group of the dorsal thalamus,TH,1077,43.90851584
+444,MED,Medial group of the dorsal thalamus,TH,1078,39.61511659
+571,MTN,Midline group of the dorsal thalamus,TH,1079,44.0249389
+51,ILM,Intralaminar nuclei of the dorsal thalamus,TH,1080,36.428837
+262,RT,Reticular nucleus of the thalamus,TH,1081,35.58632868
+1014,GENv,"Geniculate group, ventral thalamus",TH,1082,34.744293
+958,EPI,Epithalamus,TH,1083,49.57866896
+157,PVZ,Periventricular zone,HY,1084,32.36791716
+141,PVR,Periventricular region,HY,1085,31.54199041
+467,MEZ,Hypothalamic medial zone,HY,1086,29.85743807
+290,LZ,Hypothalamic lateral zone,HY,1087,28.89690943
+339,MBsen,"Midbrain, sensory related",MID,1089,41.80734068
+323,MBmot,"Midbrain, motor related",MID,1090,37.47135197
+348,MBsta,"Midbrain, behavioral state related",MID,1091,29.80170053
