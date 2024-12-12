@@ -96,7 +96,7 @@ def remap_synaptome(synaptome, region_mapping, type='density'):
     return output
 
 
-path = "/home/jhansen/projects/proj_synaptome/"
+path = "/home/jhansen/gitrepos/hansen_synaptome/"
 
 """
 load synaptome

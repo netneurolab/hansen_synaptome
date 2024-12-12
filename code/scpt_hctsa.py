@@ -47,7 +47,7 @@ def scatter_types(x, y, ont_names, cmap_ontology, ax):
         ax.scatter(x=x[mask], y=y[mask], label=name, color=colour)
 
 
-path = "/home/jhansen/projects/proj_synaptome/"
+path = "/home/jhansen/gitrepos/hansen_synaptome/"
 
 """
 load
@@ -339,3 +339,95 @@ for i, r in enumerate(reg):
 fig.suptitle(f'Mouse {mouse_idx}')
 fig.tight_layout()
 fig.savefig(path+'figures/eps/plot_type2_ts_mouse{}.eps'.format(mouse_idx))
+
+"""
+compare features (code modified from golia)
+"""
+
+# plt.rcParams.update({'font.size': 8}) for type2 features
+
+# for each synapse type
+for stype in range(rhos.shape[0]):
+    
+    # get features that are significant
+    sig = np.where(pvals[stype, :, 0] < 0.05)[0]
+    if len(sig) == 0:
+        continue
+    
+    # feature matrix of hits
+    featMat = hctsa['Awake'][:, sig]
+    
+    # feature similarity matrix
+    dataMat = zscore(featMat)
+    dataMat = np.abs(spearmanr(dataMat)[0])
+
+    # define number of clusters etc
+    nnode, nfeat = dataMat.shape
+    num_clusters = np.arange(2, 11)
+    allLabels = np.zeros((len(num_clusters), nfeat))
+
+    # clustering analysis
+    for clustering in range(len(num_clusters)):
+        start = time.time()
+        nclust = num_clusters[clustering]
+        clusteringResult = AgglomerativeClustering(n_clusters=nclust,
+                                                   linkage='average').fit(
+                                                   dataMat.T)
+        allLabels[clustering, :] = clusteringResult.labels_
+        end = time.time()
+        print('\nRunning time = ', end-start, 'seconds!')
+
+    # np.save(path + 'results/HCTSA/hierClust_all.npy', allLabels)
+
+    # plot and save all solutions
+    for solutionid in range(allLabels.shape[0]):
+        nclusters = len(np.unique(allLabels[solutionid, :]))
+        print(nclusters)
+
+        # communities = np.asarray(allLabels[solutionid, :])
+        communities = allLabels[solutionid, :].flatten().astype(int)
+        if 0 in communities:
+            communities = communities + 1
+
+        myplot = plotting.plot_mod_heatmap(dataMat, communities, cmap='magma',
+                                           rasterized=True, figsize=(30, 30),
+                                           xticklabels=features['Name'].iloc[sig].values)
+        plt.tight_layout()
+
+        plt.savefig(path + 'figures/png/heatmap_featuresimilarity_type%s_nclusters%s.png'
+                    % (['1', '1l', '1s', '2', '3'][stype], nclusters),
+                    bbox_inches='tight')
+
+# or do dendrogram method
+
+for stype in range(rhos.shape[0]):
+
+    # get features that are significant
+    sig = np.where(pvals[stype, :, 0] < 0.05)[0]
+    if len(sig) == 0:
+        continue
+    
+    # feature matrix of hits
+    featMat = hctsa['Awake'][:, sig]
+    
+    # feature similarity matrix
+    dataMat = zscore(featMat)
+    dataMat = np.abs(spearmanr(dataMat)[0])
+
+    # setting distance_threshold=0 ensures we compute the full tree (we won't
+    # be 'cutting' the tree to get a certain number of clusters)
+    model = AgglomerativeClustering(distance_threshold=0, n_clusters=None,
+                                    linkage='average')
+    model = model.fit(dataMat.T)
+
+    fig, axis = plt.subplots(1, 1, figsize=(15, 7))
+    plt.title('Hierarchical Clustering Dendrogram: Type {}'.format(
+        ['1', '1l', '1s', '2', '3'][stype]))
+    # plot dendrogram; 'CodeString' corresponds to each feature's hctsa code string
+    plot_dendrogram(model, truncate_mode='level', p=0,
+                    labels=features['Name'].iloc[sig].values,
+                    leaf_rotation=90, ax=axis)
+    plt.tight_layout()
+    plt.savefig(path + 'figures/png/dendogram_type{}.png'
+                .format(['1', '1l', '1s', '2', '3'][stype]),
+                bbox_inches='tight', dpi=300)

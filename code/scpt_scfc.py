@@ -75,7 +75,7 @@ def scatter_types(x, y, ont_names, cmap_ontology, ax, rpvals=None):
                        linewidths=(rpvals[mask] < 0.05) * 1, edgecolors='k')
 
 
-path = "/home/jhansen/projects/proj_synaptome/"
+path = "/home/jhansen/gitrepos/hansen_synaptome/"
 
 """
 load
