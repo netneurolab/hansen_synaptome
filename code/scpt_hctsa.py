@@ -14,7 +14,6 @@ from scipy.stats import spearmanr, zscore
 from statsmodels.stats.multitest import multipletests
 from ast import literal_eval
 import mat73
-from sklearn.linear_model import LinearRegression
 
 
 def plot_hctsa_corr(feature, state, type_array, type_name, saveout=True):
@@ -48,6 +47,7 @@ def scatter_types(x, y, ont_names, cmap_ontology, ax):
 
 
 path = "/home/jhansen/gitrepos/hansen_synaptome/"
+path = "C:/Users/justi/OneDrive - McGill University/MisicLab/proj_synaptome/github/hansen_synaptome/"
 
 """
 load
@@ -173,7 +173,7 @@ for state in ['Awake', 'Halo', 'MedIso']:
                    .format(state))
     rhos = file['rhos']
     pvals_corrected = file['pvals_corrected']
-    with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-hits_'
+    with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-snrregressed-hits_'
                         + 'naivep_bonferroni-corrected_{}.xlsx'.format(state),
                         engine='openpyxl') as writer:
         sheet_created = False
@@ -203,53 +203,6 @@ plot_hctsa_corr('MF_steps_ahead_arma_3_1_6_rmserr_4',
                 'Awake', type1s, 'type1-short')
 plot_hctsa_corr('DN_OutlierInclude_n_001_mrmd',
                 'Awake', type2, 'type2')
-
-
-"""
-SNR
-"""
-
-# compare SNR with synapse density data
-snr = region_mapping[lfunc].sort_values(by='ontology')['SNR'].values
-fig, axs = plt.subplots(1, 3, figsize=(15, 5))
-for i, t in enumerate([type1l, type1s, type2]):
-    scatter_types(t, snr,
-                  ont_names, cmap_ontology, axs[i])
-    axs[i].set_xlabel('type{}'.format(['1l', '1s', '2'][i]))
-    axs[i].set_ylabel('SNR')
-    r, p = spearmanr(t, snr, nan_policy='omit')
-    axs[i].set_title('r = ' + str(np.round(r, 4))
-                     + ', p = ' + str(np.round(p, 4)))
-    axs[i].set_aspect(1.0/axs[i].get_data_ratio(), adjustable='box')
-fig.tight_layout()
-fig.savefig(path+'figures/eps/scatter_snr_type.eps')
-
-# regress SNR from hctsa features
-hctsa_reg = hctsa['Awake'].copy()
-snr[np.isnan(snr)] = np.nanmean(snr)
-
-model = LinearRegression()
-for i in range(hctsa['Awake'].shape[1]):
-    y = hctsa['Awake'][:, i]
-    model.fit(snr.reshape(-1, 1), y)  # Fit the model
-    y_pred = model.predict(snr.reshape(-1, 1))  # Predicted values based on SNR
-    hctsa_reg[:, i] = y - y_pred  # Subtract predicted values to remove SNR
-
-types = [type1, type1l, type1s, type2, type3]
-
-# calculate spearman r between hctsa features and type densities
-rhos = np.zeros((len(types), hctsa_reg.shape[1], 2))
-pvals_corrected = np.zeros((len(types), hctsa_reg.shape[1], 2))
-for n, type in enumerate(types):
-    print(n)
-    for i in range(hctsa_reg.shape[1]):
-        rhos[n, i, :] = spearmanr(type, hctsa_reg[:, i])
-    pvals_corrected[n, :, 0] = multipletests(rhos[n, :, 1],
-                                             method='bonferroni')[1]
-np.savez(path+'results/HCTSA/'
-         + 'hctsa_norm_zscored_noexcl_snrregressed-corrs_Awake',
-         rhos=rhos, pvals_corrected=pvals_corrected)
-
 
 """
 plot hctsa correlation coef a la golia
@@ -339,95 +292,3 @@ for i, r in enumerate(reg):
 fig.suptitle(f'Mouse {mouse_idx}')
 fig.tight_layout()
 fig.savefig(path+'figures/eps/plot_type2_ts_mouse{}.eps'.format(mouse_idx))
-
-"""
-compare features (code modified from golia)
-"""
-
-# plt.rcParams.update({'font.size': 8}) for type2 features
-
-# for each synapse type
-for stype in range(rhos.shape[0]):
-    
-    # get features that are significant
-    sig = np.where(pvals[stype, :, 0] < 0.05)[0]
-    if len(sig) == 0:
-        continue
-    
-    # feature matrix of hits
-    featMat = hctsa['Awake'][:, sig]
-    
-    # feature similarity matrix
-    dataMat = zscore(featMat)
-    dataMat = np.abs(spearmanr(dataMat)[0])
-
-    # define number of clusters etc
-    nnode, nfeat = dataMat.shape
-    num_clusters = np.arange(2, 11)
-    allLabels = np.zeros((len(num_clusters), nfeat))
-
-    # clustering analysis
-    for clustering in range(len(num_clusters)):
-        start = time.time()
-        nclust = num_clusters[clustering]
-        clusteringResult = AgglomerativeClustering(n_clusters=nclust,
-                                                   linkage='average').fit(
-                                                   dataMat.T)
-        allLabels[clustering, :] = clusteringResult.labels_
-        end = time.time()
-        print('\nRunning time = ', end-start, 'seconds!')
-
-    # np.save(path + 'results/HCTSA/hierClust_all.npy', allLabels)
-
-    # plot and save all solutions
-    for solutionid in range(allLabels.shape[0]):
-        nclusters = len(np.unique(allLabels[solutionid, :]))
-        print(nclusters)
-
-        # communities = np.asarray(allLabels[solutionid, :])
-        communities = allLabels[solutionid, :].flatten().astype(int)
-        if 0 in communities:
-            communities = communities + 1
-
-        myplot = plotting.plot_mod_heatmap(dataMat, communities, cmap='magma',
-                                           rasterized=True, figsize=(30, 30),
-                                           xticklabels=features['Name'].iloc[sig].values)
-        plt.tight_layout()
-
-        plt.savefig(path + 'figures/png/heatmap_featuresimilarity_type%s_nclusters%s.png'
-                    % (['1', '1l', '1s', '2', '3'][stype], nclusters),
-                    bbox_inches='tight')
-
-# or do dendrogram method
-
-for stype in range(rhos.shape[0]):
-
-    # get features that are significant
-    sig = np.where(pvals[stype, :, 0] < 0.05)[0]
-    if len(sig) == 0:
-        continue
-    
-    # feature matrix of hits
-    featMat = hctsa['Awake'][:, sig]
-    
-    # feature similarity matrix
-    dataMat = zscore(featMat)
-    dataMat = np.abs(spearmanr(dataMat)[0])
-
-    # setting distance_threshold=0 ensures we compute the full tree (we won't
-    # be 'cutting' the tree to get a certain number of clusters)
-    model = AgglomerativeClustering(distance_threshold=0, n_clusters=None,
-                                    linkage='average')
-    model = model.fit(dataMat.T)
-
-    fig, axis = plt.subplots(1, 1, figsize=(15, 7))
-    plt.title('Hierarchical Clustering Dendrogram: Type {}'.format(
-        ['1', '1l', '1s', '2', '3'][stype]))
-    # plot dendrogram; 'CodeString' corresponds to each feature's hctsa code string
-    plot_dendrogram(model, truncate_mode='level', p=0,
-                    labels=features['Name'].iloc[sig].values,
-                    leaf_rotation=90, ax=axis)
-    plt.tight_layout()
-    plt.savefig(path + 'figures/png/dendogram_type{}.png'
-                .format(['1', '1l', '1s', '2', '3'][stype]),
-                bbox_inches='tight', dpi=300)
