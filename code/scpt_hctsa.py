@@ -39,15 +39,7 @@ def plot_hctsa_corr(feature, state, type_array, type_name, saveout=True):
                     format(state, feature, type_name))
 
 
-def scatter_types(x, y, ont_names, cmap_ontology, ax):
-    for idx, (name, colour) in enumerate(zip(ont_names,
-                                             cmap_ontology)):
-        mask = ont_names_inv == idx
-        ax.scatter(x=x[mask], y=y[mask], label=name, color=colour)
-
-
 path = "/home/jhansen/gitrepos/hansen_synaptome/"
-path = "C:/Users/justi/OneDrive - McGill University/MisicLab/proj_synaptome/github/hansen_synaptome/"
 
 """
 load
@@ -148,7 +140,7 @@ fig.savefig(path+'figures/eps/heatmap_hctsamat.eps')
 for every synapse type, univariate correlation with hctsa
 """
 
-types = [type1, type1l, type1s, type2, type3]
+types = [type1l, type1s, type2]
 
 # run correlations and save output
 for state in ['Awake', 'Halo', 'MedIso']:
@@ -173,7 +165,7 @@ for state in ['Awake', 'Halo', 'MedIso']:
                    .format(state))
     rhos = file['rhos']
     pvals_corrected = file['pvals_corrected']
-    with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-snrregressed-hits_'
+    with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-hits_'
                         + 'naivep_bonferroni-corrected_{}.xlsx'.format(state),
                         engine='openpyxl') as writer:
         sheet_created = False
@@ -189,8 +181,8 @@ for state in ['Awake', 'Halo', 'MedIso']:
             selected_df['p_naive_bonferroni'] = pvals_corrected[n, sig[0], 0]
             selected_df.iloc[sigsort].to_excel(writer,
                                                sheet_name='Type{}'.format(
-                                                   ['1', '1l', '1s',
-                                                    '2', '3'][n]),
+                                                   ['1l', '1s',
+                                                    '2'][n]),
                                                index=False)
             sheet_created = True
         if not sheet_created:
@@ -199,8 +191,6 @@ for state in ['Awake', 'Halo', 'MedIso']:
 # show selected top feature
 plot_hctsa_corr('StatAv10',
                 'Awake', type1l, 'type1-long')
-plot_hctsa_corr('MF_steps_ahead_arma_3_1_6_rmserr_4',
-                'Awake', type1s, 'type1-short')
 plot_hctsa_corr('DN_OutlierInclude_n_001_mrmd',
                 'Awake', type2, 'type2')
 

@@ -219,7 +219,7 @@ with pd.ExcelWriter(path+'results/gene_expression/gexphits_corsagunion.xlsx',
         df.to_excel(writer, sheet_name='Type{}'.format(
             ['1', '1l', '1s', '2', '3'][n]), index=False)
 
-# some selected vignets
+# some selected vignettes
 fig, ax = plt.subplots(1, 5, figsize=(25, 5))
 for i, g in enumerate(['Dact2', 'Slc9a9', 'Lamp5', 'Kcnq5', 'Agt']):
     scatter_types(type1l, gexp_cor_norm[g], ont_names, cmap_ontology, ax[i])

@@ -28,16 +28,20 @@ def scatter_types(x, y, ont_names, cmap_ontology, ax, ont_names_inv=None):
 
 
 def regress_out(y, X):
+
     """
-    Regress out the effects of multiple variables (X) from a target variable (y).
+    Regress out the effects of multiple variables (X)
+    from a target variable (y).
 
     Parameters:
         y (array-like): Target variable (n_samples,).
         X (array-like): Predictor variables (n_samples, n_predictors).
 
     Returns:
-        residuals (array): The target variable with the effects of X regressed out.
+        residuals (array): The target variable with the effects of X
+        regressed out.
     """
+
     X = np.asarray(X)  # Ensure X is a NumPy array
     if X.ndim == 1:
         X = X.reshape(-1, 1)  # Handle single predictor case
@@ -51,23 +55,29 @@ def regress_out(y, X):
 
 
 def SY_StatAv(y, whatType='seg', n=5):
+
     """
     SY_StatAv: Simple mean-stationarity metric, StatAv.
 
     This function divides a time series into non-overlapping subsegments,
-    calculates the mean in each of these segments, and returns the standard deviation
-    of these means, normalized by the standard deviation of the original time series.
+    calculates the mean in each of these segments, and returns the standard
+    deviation of these means, normalized by the standard deviation of the
+    original time series.
+
+    This code is translated from Ben Fulcher's Matlab code.
 
     Parameters:
         y (array-like): Input time series.
         whatType (str): Type of StatAv to perform:
                         - 'seg': Divide the time series into n segments.
-                        - 'len': Divide the time series into segments of length n.
+                        - 'len': Divide the time series into segments of
+                                 length n.
         n (int): Number of segments ('seg') or segment length ('len').
 
     Returns:
-        float: The StatAv metric (normalized standard deviation of segment means).
+        float: StatAv (normalized standard deviation of segment means).
     """
+    
     y = np.asarray(y)  # Ensure y is a NumPy array
     N = len(y)  # Length of the time series
 
@@ -75,30 +85,34 @@ def SY_StatAv(y, whatType='seg', n=5):
         # Divide the time series into n equal segments
         p = N // n  # Segment length
         if p < 1:
-            raise ValueError("Number of segments (n) is too large for the time series length.")
+            raise ValueError("Number of segments (n) is too large for the\
+                             time series length.")
         M = [np.mean(y[p * j:p * (j + 1)]) for j in range(n)]  # Segment means
 
     elif whatType == 'len':
         # Divide the time series into segments of length n
         if N > 2 * n:
             pn = N // n  # Number of complete segments
-            M = [np.mean(y[j * n:(j + 1) * n]) for j in range(pn)]  # Segment means
+            M = [np.mean(y[j * n:(j + 1) * n]) for j in range(pn)]  # means
         else:
-            print(f"This time series (N = {N}) is too short for StatAv('{whatType}', {n}).")
+            print(f"This time series (N = {N}) is too short\
+                  for StatAv('{whatType}', {n}).")
             return np.nan
 
     else:
-        raise ValueError("Invalid 'whatType'. Please select either 'seg' or 'len'.")
+        raise ValueError("Invalid 'whatType'.\
+                         Please select either 'seg' or 'len'.")
 
     # Compute the StatAv statistic
     s = np.std(y, ddof=1)  # Standard deviation of the original time series
     sdav = np.std(M, ddof=1)  # Standard deviation of the segment means
-    out = sdav / s  # Normalize by the standard deviation of the original time series
+    out = sdav / s  # Normalize by std of the original time series
 
     return out
 
 
 def plot_binned_means(time_series, n_bins, set_axes=False):
+
     """
     Plot a time series, bin it into n equal segments, and plot the bin means
     normalized by std of entire time series, centered at bin midpoints.
@@ -107,17 +121,21 @@ def plot_binned_means(time_series, n_bins, set_axes=False):
         time_series (array-like): The input time series.
         n_bins (int): The number of bins to divide the time series into.
     """
+
     time_series = np.asarray(time_series)
     N = len(time_series)
     bin_size = N // n_bins  # Size of each bin
 
     if bin_size < 1:
-        raise ValueError("Number of bins is too large for the time series length.")
+        raise ValueError("Number of bins is too large\
+                         for the time series length.")
 
     # Compute bin edges, bin midpoints, and bin means
     bin_edges = [i * bin_size for i in range(n_bins + 1)]
-    bin_midpoints = [(bin_edges[i] + bin_edges[i + 1]) / 2 for i in range(n_bins)]  # Centers of bins
-    bin_means = [np.mean(time_series[bin_edges[i]:bin_edges[i + 1]]) for i in range(n_bins)]
+    bin_midpoints = [(bin_edges[i] + bin_edges[i + 1]) / 2
+                     for i in range(n_bins)]  # Centers of bins
+    bin_means = [np.mean(time_series[bin_edges[i]:bin_edges[i + 1]])
+                 for i in range(n_bins)]
 
     # Create the figure
     fig = plt.figure(figsize=(10, 8))
@@ -156,6 +174,7 @@ def plot_binned_means(time_series, n_bins, set_axes=False):
 
 
 def plot_outlier_include(y, threshold_how='n', inc=0.01):
+
     """
     Visualize how DN_OutlierInclude computes out.mrmd in Python.
 
@@ -164,6 +183,7 @@ def plot_outlier_include(y, threshold_how='n', inc=0.01):
         threshold_how (str): Method to define outliers ('n' for neg).
         inc (float): Increment for threshold values (e.g., 0.01).
     """
+
     # Ensure the time series is z-scored
     y = (y - np.mean(y)) / np.std(y) if np.std(y) != 0 else y
 
@@ -202,7 +222,8 @@ def plot_outlier_include(y, threshold_how='n', inc=0.01):
     th = thr[np.int(2/3 * len(thr))]
     r = np.where(y <= -th)[0]
     axs[0].plot(x_rescaled, y, '-k', linewidth=1.5, label='Time Series')
-    axs[0].plot(x_rescaled[r], y[r], 'or', markersize=6, label='Included Points')
+    axs[0].plot(x_rescaled[r], y[r], 'or',
+                markersize=6, label='Included Points')
     axs[0].set_title(f'Time Series and Included Points (Threshold: {-th:.2f})')
     axs[0].set_xlabel('Time')
     axs[0].set_ylabel('Value')
@@ -233,7 +254,7 @@ def plot_outlier_include(y, threshold_how='n', inc=0.01):
     return fig, axs
 
 
-path = "C:/Users/justi/OneDrive - McGill University/MisicLab/proj_synaptome/github/hansen_synaptome/"
+path = "/home/jhansen/gitrepos/hansen_synaptome/"
 
 """
 set-up
@@ -301,7 +322,8 @@ ts = mat73.loadmat(path+'data/function/Gozzi/BOLD_timeseries_Awake.mat')[
                        'BOLD_timeseries_Awake']
 
 # load framewise displacement
-fd = np.loadtxt(path+'data/function/Gozzi/FD_scrubbed_Awake.csv', delimiter=',')
+fd = np.loadtxt(path+'data/function/Gozzi/FD_scrubbed_Awake.csv',
+                delimiter=',')
 
 """
 cluster hctsa features for interpretation
@@ -313,10 +335,8 @@ mat = np.load(path+'results/HCTSA/'
 rhos = mat['rhos']
 pvals = mat['pvals_corrected']
 
-# plt.rcParams.update({'font.size': 8}) for type2 features
-
 # for each synapse type
-for stype in np.arange(1, 4):  # or, range(rhos.shape[0])
+for stype in range(rhos.shape[0]):
 
     # get features that are significant
     if stype == 3:
@@ -358,7 +378,8 @@ for stype in np.arange(1, 4):  # or, range(rhos.shape[0])
         if 0 in communities:
             communities = communities + 1
 
-        myplot = plotting.plot_mod_heatmap(dataMat, communities, cmap=PuRd_4.mpl_colormap,
+        myplot = plotting.plot_mod_heatmap(dataMat, communities,
+                                           cmap=PuRd_4.mpl_colormap,
                                            vmin=np.min(dataMat), vmax=1,
                                            rasterized=True, figsize=(10, 10),
                                            xticklabels=features[
@@ -385,25 +406,6 @@ for stype in np.arange(1, 4):  # or, range(rhos.shape[0])
 dig into StatAv
 """
 
-# calculate StatAv for each time-series across different number of bins
-nbins = np.arange(2, 26)
-sta = np.zeros((len(nbins), len(ts), ts[0][0].shape[0]))
-for b in range(len(nbins)):
-    for subj in range(len(ts)):
-        for node in range(ts[subj][0].shape[0]):
-            sta[b, subj, node] = SY_StatAv(zscore(ts[subj][0][node, :]), n=nbins[b])
-sta_mean = np.mean(sta, axis=1)
-
-# correlate with type1L
-statav_rhos = np.array([spearmanr(type1l, sta_mean[i, ont_idx])[0] for i in range(len(nbins))])
-# plot statav correlation against number of bins
-fig, ax = plt.subplots()
-ax.scatter(nbins, statav_rhos)
-ax.set_xlabel('number of bins')
-ax.set_ylabel('spearman r with type1-long')
-ax.set_aspect(1.0/ax.get_data_ratio(), adjustable='box')
-fig.savefig(path+'figures/eps/scatter_statav_type1l.eps')
-
 # pick two time-series and plot distribution of means
 mouse_idx = 8
 
@@ -426,7 +428,9 @@ fig, ax = plot_outlier_include(zscore(ts[mouse_idx][0][np.where(
     region_mapping['fc81_acr'] == 'PAA')[0][0], :]))
 fig.savefig(path+'figures/eps/outlierinclude_mouse1_PAA.eps')
 
-matrix = mat73.loadmat(hctsapath + 'HCTSA_zscored_noexcl_Awake.mat')['sharedTS']
+# get feature value without normalization to interpret sign
+matrix = mat73.loadmat(hctsapath +
+                       'HCTSA_zscored_noexcl_Awake.mat')['sharedTS']
 hctsa['Awake-nonorm'] = np.mean(matrix[ont_idx, :, :], axis=2)
 features = pd.read_excel(hctsapath + 'HCTSA_features.xlsx',
                          index_col=0).reset_index()
@@ -438,20 +442,7 @@ plt.scatter(type2, hctsa['Awake-nonorm'][:, i])
 SNR
 """
 
-# compare SNR with synapse density data
 snr = region_mapping[lfunc].sort_values(by='ontology')['SNR'].values
-fig, axs = plt.subplots(1, 3, figsize=(15, 5))
-for i, t in enumerate([type1l, type1s, type2]):
-    scatter_types(t, snr,
-                  ont_names, cmap_ontology, axs[i])
-    axs[i].set_xlabel('type{}'.format(['1l', '1s', '2'][i]))
-    axs[i].set_ylabel('SNR')
-    r, p = spearmanr(t, snr, nan_policy='omit')
-    axs[i].set_title('r = ' + str(np.round(r, 4))
-                     + ', p = ' + str(np.round(p, 4)))
-    axs[i].set_aspect(1.0/axs[i].get_data_ratio(), adjustable='box')
-fig.tight_layout()
-fig.savefig(path+'figures/eps/scatter_snr_type.eps')
 
 # find hctsa features that are significantly corr with SNR
 snr[np.isnan(snr)] = np.nanmean(snr)
@@ -492,7 +483,8 @@ check framewise displacement
 fd_rhos = np.zeros((len(ts), len(ont_idx)))
 for mouse in range(len(ts)):
     for region in range(len(ont_idx)):
-        fd_rhos[mouse, region] = spearmanr(fd[mouse, :], ts[mouse][0][ont_idx[region], :])[0]
+        fd_rhos[mouse, region] = spearmanr(fd[mouse, :],
+                                           ts[mouse][0][ont_idx[region], :])[0]
 
 # violinplot of corrs for each mouse
 plt.figure()
@@ -518,8 +510,10 @@ den = pd.read_csv(path+'data/cellatlas_ero2018.csv', index_col=0)
 df = dict([])
 
 # for each region in 88-region parc (but unilateral, hence ::2 or 1::2)
-for index, row in region_mapping[lfunc].sort_values(by='ontology').iloc[::2].iterrows():
-    # get regions in cell density data that correspond to this region in fc data
+regions = region_mapping[lfunc].sort_values(by='ontology').iloc[::2].iterrows()
+for index, row in regions:
+    # get regions in cell density data that correspond
+    # to this region in fc data
     relevant_rows = den[den['acronym'].isin(row['synaptome_acr'])]   
     # average across regions
     df[row['fc81_acr']] = relevant_rows.iloc[:, 1:-1].mean(axis=0).values
@@ -537,7 +531,7 @@ for n, type in enumerate(types):
 # plot heatmap
 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 sns.heatmap(cell_rhos[:, :, 0].T, square=True, annot=True,
-            cmap=cmap_div, vmin=-1, vmax=1, ax=ax)
+            cmap=cmap_div, vmin=-1, vmax=1, ax=ax, linewidths=.5)
 for i in range(cell_rhos.shape[0]):
     for j in range(cell_rhos.shape[1]):
         if cell_rhos[i, j, 1] < 0.05:
@@ -556,30 +550,42 @@ for i, t in enumerate([type1l, type1s, type2]):
                       ont_names, cmap_ontology, axs[i, ii], ont_names_inv[::2])
         axs[i, ii].set_xlabel('type{}'.format(['1l', '1s', '2'][i]))
         axs[i, ii].set_ylabel(celltype)
-        axs[i, ii].set_title('r = ' + str(np.round(cell_rhos[i+1, ii, 0], 4))
-                             + ', p = ' + str(np.round(cell_rhos[i+1, ii, 1], 4)))
-        axs[i, ii].set_aspect(1.0/axs[i, ii].get_data_ratio(), adjustable='box')
+        axs[i, ii].set_title('r = ' + str(np.round(cell_rhos[i, ii, 0], 4))
+                             + ', p = '
+                             + str(np.round(cell_rhos[i, ii, 1], 4)))
+        axs[i, ii].set_aspect(1.0/axs[i, ii].get_data_ratio(),
+                              adjustable='box')
 fig.tight_layout()
 fig.savefig(path+'figures/eps/scatter_celltypes.eps')
 
-# regress cell type out of hctsa feature (or synapse type?)
-hctsa_reg = np.zeros((int(hctsa['Awake'].shape[0]/2),
-                      hctsa['Awake'].shape[1]))
-
-for i in range(hctsa['Awake'].shape[1]):
-    hctsa_reg[:, i] = regress_out(hctsa['Awake'][1::2, i], cells.values)
-
-types = [type1, type1l, type1s, type2, type3]
-
-# calculate spearman r between hctsa features and type densities
-rhos = np.zeros((len(types), hctsa_reg.shape[1], 2))
-pvals_corrected = np.zeros((len(types), hctsa_reg.shape[1], 2))
-for n, type in enumerate(types):
+# calculate spearman r between hctsa features and cell types
+rhos = np.zeros((len(cells.columns), hctsa['Awake'].shape[1], 2))
+pvals_corrected = np.zeros((len(cells.columns), hctsa['Awake'].shape[1], 2))
+for n, key in enumerate(cells.keys()):
     print(n)
-    for i in range(hctsa_reg.shape[1]):
-        rhos[n, i, :] = spearmanr(type[1::2], hctsa_reg[:, i])
+    for i in range(hctsa['Awake'].shape[1]):
+        rhos[n, i, :] = spearmanr(cells[key], hctsa['Awake'][1::2, i])
     pvals_corrected[n, :, 0] = multipletests(rhos[n, :, 1],
                                              method='bonferroni')[1]
-np.savez(path+'results/HCTSA/'
-         + 'hctsa_norm_zscored_noexcl_celltyperegressed-corrs_Awake',
-         rhos=rhos, pvals_corrected=pvals_corrected)
+
+with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-hits_'
+                    + 'naivep_bonferroni-corrected_cells.xlsx',
+                    engine='openpyxl') as writer:
+    sheet_created = False
+    for n in range(len(cells.columns)):
+        sig = np.where(pvals_corrected[n, :, 0] < 0.05)
+        if len(sig[0]) == 0:
+            continue
+        sigsort = np.argsort(abs(rhos[n, sig, 0].flatten()))
+        selected_df = features.iloc[sig[0],
+                                    features.columns.isin(['Name',
+                                                           'Keywords'])]
+        selected_df['Spearmanr'] = rhos[n, sig[0], 0]
+        selected_df['p_naive_bonferroni'] = pvals_corrected[n, sig[0], 0]
+        selected_df.iloc[sigsort].to_excel(writer,
+                                           sheet_name=cells.columns[
+                                               n].split(' ')[0],
+                                           index=False)
+        sheet_created = True
+    if not sheet_created:
+        print(state + ' ' + str(n))
