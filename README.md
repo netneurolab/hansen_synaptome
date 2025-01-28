@@ -16,12 +16,12 @@ A description of each file follows (in an order that complements the manuscript)
 - [scpt_gexp.py](code/scpt_gexp.py) is where I compare synapse type density with gene expression profiles from the Allen Mouse Brain Atlas. It's a supplementary analysis but ended up getting a main text figure for itself (Figure 5). Gene Ontology was done using files from [this Zenodo repository](https://zenodo.org/records/4460714).
 
 ## `data`
-The [data](data/) folder contains data files used for the analyses.
+The [data](data/) folder contains data files used for the analyses. If you use this data in your own analyses, please cite the associated papers (and even let them know!).
 
 - All the "mapping" files are used for mapping synaptome regions to SC/FC regions.
 - [cellatlas_ero2018.csv](data/cellatlas_ero2018.csv) has cell density data for 9 different cell types (some of the "types" are combinations of other types, e.g. "neurons" which is "inhibitory neurons" and "excitatory neurons" together). This data is from [Ero et al 2018 Front Neuroinformatics](https://doi.org/10.3389/fninf.2018.00084) (Data Sheet 2).
 - [synaptome](data/synaptome/) contains synapse type densities in their raw form ([Type_density_Ricky.xlsx](data/mouse_liu2018/Type_density_Ricky.xlsx)) and mapped to the three parcellations I use (synapse density data was shared by Zhen (Ricky) Liu and Seth Grant, see [this](https://doi.org/10.1016/j.neuron.2018.07.007) paper). This folder also contains synapse protein lifetimes, which were derived by [Bulovaite et al](https://doi.org/10.1016/j.neuron.2022.09.009).
-- [function](data/function/Gozzi/) contains the BOLD time-series for each mouse and each state ("Awake", and two anaesthetized states, "Halo" and "MedIso"). This also contains the SNR map, and the [hctsa](data/function/Gozzi/HCTSA/) outputs for each mouse.
+- [function](data/function/Gozzi/) contains the BOLD time-series for each mouse in the awake state. This also contains the SNR map, and the [hctsa](data/function/Gozzi/HCTSA/) outputs for each mouse. This data was shared by Alessandro Gozzi (see [this](https://www.sciencedirect.com/science/article/pii/S0960982221016912?via%3Dihub) paper).
 - [structure](data/structure/) contains the structural connectome file which is originally from the supplement of [Oh et al 2014](https://www.nature.com/articles/nature13186).
 - [gene_expression](data/gene_expression/) contains outputs from [abagen](https://abagen.readthedocs.io/en/stable/), including gene expression sampled from coronal slices, sagittal slices, plus some gene information like `entrezID` and `structure_info`.
 
