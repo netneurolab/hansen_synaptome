@@ -569,7 +569,7 @@ for n, key in enumerate(cells.keys()):
                                              method='bonferroni')[1]
 
 with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-hits_'
-                    + 'naivep_bonferroni-corrected_cells.xlsx',
+                    + 'p-bonferroni-corrected_cells.xlsx',
                     engine='openpyxl') as writer:
     sheet_created = False
     for n in range(len(cells.columns)):
@@ -581,7 +581,7 @@ with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-hits_'
                                     features.columns.isin(['Name',
                                                            'Keywords'])]
         selected_df['Spearmanr'] = rhos[n, sig[0], 0]
-        selected_df['p_naive_bonferroni'] = pvals_corrected[n, sig[0], 0]
+        selected_df['p_bonferroni'] = pvals_corrected[n, sig[0], 0]
         selected_df.iloc[sigsort].to_excel(writer,
                                            sheet_name=cells.columns[
                                                n].split(' ')[0],

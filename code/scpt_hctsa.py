@@ -106,7 +106,7 @@ filename conventions:
 'zscored' because time-series were zscored before hctsa
 'noexcl' because I included all 10 mice (earlier version was with only 9)
 'snrregressed' would mean that hctsa features have all had SNR regressed out
-'naivep_bonferroni': spearmanr parametric p-value after bonferroni correction
+'p-bonferroni': spearmanr parametric p-value after bonferroni correction
 """
 
 hctsapath = path + 'data/function/Gozzi/HCTSA/'
@@ -166,7 +166,7 @@ for state in ['Awake', 'Halo', 'MedIso']:
     rhos = file['rhos']
     pvals_corrected = file['pvals_corrected']
     with pd.ExcelWriter(path + 'results/HCTSA/hctsa-norm-zscored-noexcl-hits_'
-                        + 'naivep_bonferroni-corrected_{}.xlsx'.format(state),
+                        + 'p-bonferroni-corrected_{}.xlsx'.format(state),
                         engine='openpyxl') as writer:
         sheet_created = False
         for n in range(len(types)):
@@ -178,7 +178,7 @@ for state in ['Awake', 'Halo', 'MedIso']:
                                         features.columns.isin(['Name',
                                                                'Keywords'])]
             selected_df['Spearmanr'] = rhos[n, sig[0], 0]
-            selected_df['p_naive_bonferroni'] = pvals_corrected[n, sig[0], 0]
+            selected_df['p_bonferroni'] = pvals_corrected[n, sig[0], 0]
             selected_df.iloc[sigsort].to_excel(writer,
                                                sheet_name='Type{}'.format(
                                                    ['1l', '1s',
