@@ -7,12 +7,15 @@ import pandas as pd
 from abagen.mouse import (get_structure_coordinates,
                           fetch_allenref_structures)
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 from palettable.colorbrewer.sequential import (PuBuGn_4,
                                                PuRd_4,
                                                PuBuGn_8)
 from abagen.mouse import get_structure_info
+from netneurotools.plotting import _grid_communities
+from netneurotools.modularity import consensus_modularity
 
 
 def make_region_mapping(filepath, col1name, col2name, outpath):
@@ -213,7 +216,7 @@ def get_synaptome_acronyms(synregions):
                      ignore_index=False, axis=1)
 
 
-path = '/home/jhansen/projects/proj_synaptome/'
+path = '/home/jhansen/gitrepos/hansen_synaptome/'
 
 
 """
@@ -288,6 +291,8 @@ synregions['major_region'] = pd.Categorical(major_region,
                                             categories=major_region_acr,
                                             ordered=True)
 
+synregions.to_pickle(path+'data/synaptome/mouse_liu2018/synregions_info.pkl')
+
 # synapse type indices
 type1idx = np.arange(0, 11)
 type1idxl = np.array([1, 2, 3, 4, 9, 10])  # except 10 has short lifespan
@@ -321,10 +326,16 @@ lifespan_coarse = pd.read_excel(path+'data/synaptome/mouse_bulovaite2022/'
                                 skiprows=1)
 vals = lifespan_coarse.query("Region_name == 'whole brain'").values[0][2:]
 
+# co-localized clusters
+mat = np.corrcoef(synden.values[type3idx, :])  # type2 similarity
+c3 = consensus_modularity(mat, gamma=1, B='negative_asym')[0]
+np.save(path+'results/synapse_coloc_clusters_c3.npy', c3)
+
 # plot synaptome data
 # order of synapse types (by lifespan clusters)
 type_order = np.array([1, 2, 4, 9, 3, 10, 8, 6,
-                       0, 7, 5, 11, 12, 13, 14, 15, 16, 17])
+                       0, 7, 5])
+type_order = np.concatenate((type_order, type2idx))
 # order of brain regions (by ontology)
 region_order = synregions.sort_values(by='major_region').index
 
@@ -335,6 +346,7 @@ for idx, region in enumerate(synregions['major_region'].values[region_order]):
         border_positions.append(idx)
         current_region = region
 
+# synapse density matrix
 fig, axs = plt.subplots(1, 2, figsize=(24, 6))
 sns.heatmap(synden.values[np.ix_(type_order, region_order)], ax=axs[0],
             cmap=cmap_div, xticklabels=False, vmin=0, vmax=1, rasterized=True)
@@ -343,9 +355,25 @@ axs[0].set_xticklabels(synregions.loc[region_order, :][
     'major_region'].cat.categories, rotation=45)
 axs[0].set_xlabel('regions')
 axs[0].set_ylabel('synapse type')
+
+# synapse similarity matrix
 sns.heatmap(np.corrcoef(synden.values[type_order, :]),
             ax=axs[1], cmap=cmap_div, vmin=-1, vmax=1, square=True,
             linewidths=.5, xticklabels=False, yticklabels=False)
+# make borders for similarity matrix
+communities = np.concatenate([
+    np.full(len(type1idxl), 1),
+    np.full(len(type1idxs), 2),
+    np.full(len(type2idx), 3)
+])
+bounds = _grid_communities(communities)
+bounds[0] += 0.2
+bounds[-1] -= 0.2
+for n, edge in enumerate(np.diff(bounds)):
+    axs[1].add_patch(patches.Rectangle((bounds[n], bounds[n]),
+                                       edge, edge, fill=False, linewidth=2,
+                                       edgecolor='k'))
+
 fig.tight_layout()
 fig.savefig(path+'figures/eps/heatmap_synden.eps')
 
@@ -417,7 +445,10 @@ np.savez(path+'data/synaptome/mouse_liu2018/type_densities_88.npz',
          type1l=np.mean(synden_rmp[:, type1idxl], axis=1),
          type1s=np.mean(synden_rmp[:, type1idxs], axis=1),
          type2=np.mean(synden_rmp[:, type2idx], axis=1),
-         type3=np.mean(synden_rmp[:, type3idx], axis=1))
+         type3=np.mean(synden_rmp[:, type3idx], axis=1),
+         type3c1=np.mean(synden_rmp[:, np.where(c3 == 1)[0] + 18], axis=1),
+         type3c2=np.mean(synden_rmp[:, np.where(c3 == 2)[0] + 18], axis=1)
+         )
 
 
 """
@@ -513,7 +544,10 @@ np.savez(path+'data/synaptome/mouse_liu2018/type_densities_137.npz',
          type1l=np.mean(synden_rmp[:, type1idxl], axis=1),
          type1s=np.mean(synden_rmp[:, type1idxs], axis=1),
          type2=np.mean(synden_rmp[:, type2idx], axis=1),
-         type3=np.mean(synden_rmp[:, type3idx], axis=1))
+         type3=np.mean(synden_rmp[:, type3idx], axis=1),
+         type3c1=np.mean(synden_rmp[:, np.where(c3 == 1)[0] + 18], axis=1),
+         type3c2=np.mean(synden_rmp[:, np.where(c3 == 2)[0] + 18], axis=1)
+         )
 
 """
 Get all unique regions in synaptome (275) for gene expression

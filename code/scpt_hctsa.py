@@ -82,10 +82,11 @@ cmap_ontology = np.array([[0.39607843, 0.76862745, 0.82352941, 1.0],
                           ])
 
 # load synapse type density
-type1, type1l, type1s, type2, type3 = np.load(path
-                                              + 'data/synaptome/mouse_liu2018/'
-                                              + 'type_densities_88.npz'
-                                              ).values()
+(type1, type1l, type1s, type2,
+ type3, type3c1, type3c2) = np.load(path
+                                    + 'data/synaptome/mouse_liu2018/'
+                                    + 'type_densities_88.npz'
+                                    ).values()
 
 # make diverging colourmap
 teals = PuBuGn_4.mpl_colors
@@ -140,7 +141,7 @@ fig.savefig(path+'figures/eps/heatmap_hctsamat.eps')
 for every synapse type, univariate correlation with hctsa
 """
 
-types = [type1l, type1s, type2]
+types = [type1l, type1s, type2, type3c1, type3c2]
 
 # run correlations and save output
 for state in ['Awake', 'Halo', 'MedIso']:
@@ -182,7 +183,7 @@ for state in ['Awake', 'Halo', 'MedIso']:
             selected_df.iloc[sigsort].to_excel(writer,
                                                sheet_name='Type{}'.format(
                                                    ['1l', '1s',
-                                                    '2'][n]),
+                                                    '2', '3c1', '3c2'][n]),
                                                index=False)
             sheet_created = True
         if not sheet_created:
@@ -216,7 +217,7 @@ for i in range(rhos.shape[0]):
                   s=2, c='#d8d8d8')
     ax[i].set_xlabel('feature')
     ax[i].set_ylabel('spearmanr')
-    ax[i].set_title('type {}'.format(['1', '1l', '1s', '2', '3'][i]))
+    ax[i].set_title('type {}'.format(['1l', '1s', '2', '3c1', '3c2'][i]))
 fig.tight_layout()
 fig.savefig(path+'figures/eps/scatter_hctsarhos_Awake.eps')
 

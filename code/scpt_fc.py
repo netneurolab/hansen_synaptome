@@ -32,7 +32,7 @@ def get_degrhos(fc, synden_rmp, regions):
     return rhos
 
 
-path = "/home/jhansen/projects/proj_synaptome/"
+path = "/home/jhansen/gitrepos/hansen_synaptome/"
 
 """
 load
@@ -94,10 +94,11 @@ cmap_ontology = np.array([[0.39607843, 0.76862745, 0.82352941, 1.0],
                           [0.76862745, 0.88627451, 0.73725490, 1.0]
                           ])
 
-type1, type1l, type1s, type2, type3 = np.load(path
-                                              + 'data/synaptome/mouse_liu2018/'
-                                              + 'type_densities_88.npz'
-                                              ).values()
+(type1, type1l, type1s, type2,
+ type3, type3c1, type3c2) = np.load(path
+                                    + 'data/synaptome/mouse_liu2018/'
+                                    + 'type_densities_88.npz'
+                                    ).values()
 
 """
 plot the synaptome matrices
@@ -110,18 +111,17 @@ nnodes = len(synden_rmp)
 mask = np.triu_indices(nnodes, k=1)
 
 # plot synapse density and type x type correlation matrix
-order = np.array([1, 2, 4, 9, 3, 10, 8, 6, 0,
-                  7, 5, 11, 12, 13, 14, 15, 16, 17])
+type_order = np.load(path+'data/synaptome/mouse_liu2018/type_order.npy')
 
 fig, axs = plt.subplots(1, 2, figsize=(14, 6))
-sns.heatmap(synden_rmp[:, order].T, ax=axs[0], cmap=cmap_div,
-            xticklabels=False, yticklabels=order, vmin=np.min(synden_rmp),
+sns.heatmap(synden_rmp[:, type_order].T, ax=axs[0], cmap=cmap_div,
+            xticklabels=False, yticklabels=type_order, vmin=np.min(synden_rmp),
             vmax=np.max(synden_rmp))
 axs[0].set_xlabel('regions')
 axs[0].set_ylabel('synapse type')
-sns.heatmap(np.corrcoef(synden_rmp[:, order].T),
+sns.heatmap(np.corrcoef(synden_rmp[:, type_order].T),
             ax=axs[1], cmap=cmap_div, vmin=-1, vmax=1, square=True,
-            linewidths=.5, xticklabels=order, yticklabels=order)
+            linewidths=.5, xticklabels=type_order, yticklabels=type_order)
 fig.tight_layout()
 fig.savefig(path+'figures/eps/heatmap_synden88.eps')
 
@@ -129,7 +129,7 @@ fig.savefig(path+'figures/eps/heatmap_synden88.eps')
 plot the FC matrices and correlate with synapse similarity
 """
 
-syndensim_rmp = spearmanr(synden_rmp[:, order], axis=1)[0]
+syndensim_rmp = spearmanr(synden_rmp[:, type_order], axis=1)[0]
 
 fc = dict([])
 
@@ -166,13 +166,14 @@ correlated with strength (weighted degree/hubs)
 """
 
 for key, value in fc.items():
-    fig, axs = plt.subplots(1, 3, figsize=(21, 5), sharey=True)
-    for i, t in enumerate([type1l, type1s, type2]):
+    fig, axs = plt.subplots(1, 5, figsize=(35, 5), sharey=True)
+    for i, t in enumerate([type1l, type1s, type2, type3c1, type3c2]):
         x = t
         y = np.sum(np.mean(value, axis=2), axis=1)
         r, p = spearmanr(x, y)
         scatter_types(x, y, ont_names, cmap_ontology, axs[i])
-        axs[i].set_xlabel('type{}'.format(['1L', '1S', '2'][i]))
+        axs[i].set_xlabel('type{}'.format(['1L', '1S',
+                                           '2', '3c1', '3c2'][i]))
         axs[i].set_ylabel('FC' + key)
         axs[i].set_title('r = ' + str(np.round(r, 3)) + ', p = '
                          + str(np.round(p, 4)))

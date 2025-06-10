@@ -109,10 +109,11 @@ synden = pd.read_excel(path + 'data/synaptome/mouse_liu2018/'
 synden_rmp, synparamsim_rmp = np.load(
     path+'results/synaptome_sc137.npz').values()
 
-type1, type1l, type1s, type2, type3 = np.load(path
-                                              + 'data/synaptome/mouse_liu2018/'
-                                              + 'type_densities_137.npz'
-                                              ).values()
+(type1, type1l, type1s, type2,
+ type3, type3c1, type3c2) = np.load(path
+                                    + 'data/synaptome/mouse_liu2018/'
+                                    + 'type_densities_137.npz'
+                                    ).values()
 type1idx = np.arange(0, 11)
 type1idxl = np.array([1, 2, 3, 4, 9, 10])  # except 10 has short lifespan
 type1idxs = np.array([0, 5, 6, 7, 8])
@@ -164,17 +165,19 @@ cmap_div = LinearSegmentedColormap.from_list('cmap', teals, N=256)
 plot synapse density and similarity
 """
 
-order = np.array([1, 2, 4, 9, 3, 10, 8, 6, 0,
-                  7, 5, 11, 12, 13, 14, 15, 16, 17])
+# get synapse type clusters
+type_order = np.load(path+'data/synaptome/mouse_liu2018/type_order.npy')
+
+
 fig, axs = plt.subplots(1, 2, figsize=(14, 6))
-sns.heatmap(synden_rmp[:, order].T, ax=axs[0], cmap=cmap_div,
-            xticklabels=False, yticklabels=order, vmin=np.min(synden_rmp),
+sns.heatmap(synden_rmp[:, type_order].T, ax=axs[0], cmap=cmap_div,
+            xticklabels=False, yticklabels=type_order, vmin=np.min(synden_rmp),
             vmax=np.max(synden_rmp))
 axs[0].set_xlabel('regions')
 axs[0].set_ylabel('synapse type')
-sns.heatmap(np.corrcoef(synden_rmp[:, order].T),
+sns.heatmap(np.corrcoef(synden_rmp[:, type_order].T),
             ax=axs[1], cmap=cmap_div, vmin=-1, vmax=1, square=True,
-            linewidths=.5, xticklabels=order, yticklabels=order)
+            linewidths=.5, xticklabels=type_order, yticklabels=type_order)
 fig.tight_layout()
 fig.savefig(path+'figures/eps/heatmap_synden137.eps')
 
@@ -205,12 +208,13 @@ fig.savefig(path+'figures/eps/heatmap_sc137.eps')
 correlate with degree
 """
 
-fig, axs = plt.subplots(2, 3, figsize=(15, 10), sharey=True)
-for i, type in enumerate([type1l, type1s, type2]):
+fig, axs = plt.subplots(2, 5, figsize=(25, 10), sharey=True)
+for i, type in enumerate([type1l, type1s, type2, type3c1, type3c2]):
     for d, dn in enumerate(['in', 'out']):
         scatter_types(type, np.log(np.sum(sct_rmp, axis=d)),
                       ont_names, cmap_ontology, axs[d, i])
-        axs[d, i].set_xlabel('type{}'.format(['1L', '1S', '2'][i]))
+        axs[d, i].set_xlabel('type{}'.format(['1L', '1S',
+                                              '2', '3c1', '3c2'][i]))
         axs[d, i].set_ylabel('sc weighted {}degree'.format(dn))
         r, p = spearmanr(type, np.sum(sct_rmp, axis=d))
         axs[d, i].set_title('r = ' + str(np.round(r, 4)) + ', p = '

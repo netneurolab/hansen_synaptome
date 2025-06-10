@@ -77,7 +77,7 @@ def SY_StatAv(y, whatType='seg', n=5):
     Returns:
         float: StatAv (normalized standard deviation of segment means).
     """
-    
+
     y = np.asarray(y)  # Ensure y is a NumPy array
     N = len(y)  # Length of the time series
 
@@ -293,10 +293,11 @@ cmap_ontology = np.array([[0.39607843, 0.76862745, 0.82352941, 1.0],
                           ])
 
 # load synapse type density
-type1, type1l, type1s, type2, type3 = np.load(path
-                                              + 'data/synaptome/mouse_liu2018/'
-                                              + 'type_densities_88.npz'
-                                              ).values()
+(type1, type1l, type1s, type2,
+ type3, type3c1, type3c2) = np.load(path
+                                    + 'data/synaptome/mouse_liu2018/'
+                                    + 'type_densities_88.npz'
+                                    ).values()
 
 # make diverging colourmap
 teals = PuBuGn_4.mpl_colors
@@ -335,11 +336,14 @@ mat = np.load(path+'results/HCTSA/'
 rhos = mat['rhos']
 pvals = mat['pvals_corrected']
 
+types = ['1l', '1s', '2', '3c1', '3c2']
+
 # for each synapse type
 for stype in range(rhos.shape[0]):
 
     # get features that are significant
-    if stype == 3:
+    if types[stype] == '2' or \
+       types[stype] == '3c1':
         sig = np.where((pvals[stype, :, 0] < 0.05) &
                        (abs(rhos[stype, :, 0]) >= 0.5))[0]
     else:
@@ -387,7 +391,7 @@ for stype in range(rhos.shape[0]):
         plt.tight_layout()
         plt.savefig(path + 'figures/eps/'
                     + 'heatmap_featuresimilarity_type%s_nclusters%s.eps'
-                    % (['1', '1l', '1s', '2', '3'][stype], nclusters),
+                    % (['1l', '1s', '2', '3c1', '3c2'][stype], nclusters),
                     bbox_inches='tight')
 
         # plot the absolute correlation coefficients too
@@ -397,10 +401,10 @@ for stype in range(rhos.shape[0]):
         ax.set_xticks(np.arange(len(sig)))
         ax.set_xticklabels(features['Name'].iloc[sig[inds]].values,
                            rotation=90)
-        ax.set_title('type{}: nclusters={}'.format(stype, nclusters))
+        ax.set_title('type{}: nclusters={}'.format(types[stype], nclusters))
         fig.tight_layout()
         fig.savefig(path + 'figures/eps/scatter_absrhos_type{}_nclusters{}.eps'
-                    .format(stype, nclusters))
+                    .format(types[stype], nclusters))
 
 """
 dig into StatAv
@@ -514,7 +518,7 @@ regions = region_mapping[lfunc].sort_values(by='ontology').iloc[::2].iterrows()
 for index, row in regions:
     # get regions in cell density data that correspond
     # to this region in fc data
-    relevant_rows = den[den['acronym'].isin(row['synaptome_acr'])]   
+    relevant_rows = den[den['acronym'].isin(row['synaptome_acr'])]
     # average across regions
     df[row['fc81_acr']] = relevant_rows.iloc[:, 1:-1].mean(axis=0).values
 
