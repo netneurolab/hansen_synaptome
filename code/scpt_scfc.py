@@ -202,9 +202,11 @@ for m, state in enumerate(['awake', 'halo', 'mediso']):
             y = np.mean(fc[state], axis=2)[:, i]
             x1 = cmc[:, i]
             x2 = syn[synfeat][syn_reorder_idx]
+            # x3 = syn['type3c1'][syn_reorder_idx]
+            # x4 = syn['type3c2'][syn_reorder_idx]
 
             x_sc = zscore(x1).reshape(-1, 1)
-            x_syn = zscore(np.stack((x1, x2), axis=1))
+            x_syn = zscore(np.stack((x1, x2), axis=1)) # add x3 and x4 for coloc version (Fig S10)
             rsq_sc[state + '-' + synfeat][i], res_sc = get_reg_r_sq(x_sc, y)
             rsq_syn[state + '-' + synfeat][i], res_r = get_reg_r_sq(x_syn, y)
 
@@ -228,7 +230,7 @@ with open(path+'results/rsq_sc.pkl', 'wb') as file:
 compare distributions
 """
 
-state = 'mediso'
+state = 'halo'
 fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 for j, synfeat in enumerate(['type1l', 'type1s', 'type2']):
     x = rsq_syn['awake-' + synfeat] - rsq_sc['awake-' + synfeat]
@@ -240,6 +242,27 @@ for j, synfeat in enumerate(['type1l', 'type1s', 'type2']):
     axs[j].set_xlabel('Rsq difference')
 fig.tight_layout()
 fig.savefig(path+'figures/eps/violin_scfc_rsqdiff_{}.eps'.format(state))
+
+# coletta networks
+coletta = fcregions["COLETTA NETWORK"][fc_reorder_idx]
+networks = networks = ["DMN-MID", "DMN-PLN", "LCN", "OF-BF"]
+
+state = 'halo'
+fig, axs = plt.subplots(3, len(networks), figsize=(15, 5))
+for j, synfeat in enumerate(['type1l', 'type1s', 'type2']):
+    for i, net in enumerate(networks):
+        idx = coletta == net
+        x = rsq_syn['awake-' + synfeat] - rsq_sc['awake-' + synfeat]
+        y = rsq_syn[state + '-' + synfeat] - rsq_sc[state + '-' + synfeat]
+        x = x[idx]
+        y = y[idx]
+        sns.violinplot([x, y], ax=axs[j, i])
+        t, p = wilcoxon(x, y, nan_policy='omit')
+        axs[j, i].set_title(synfeat + ': p=' + str(p))
+        # axs[j].legend(['awake', state])
+        axs[j, i].set_xlabel('Rsq difference')
+fig.tight_layout()
+
 
 """
 plot mouse brain (requires separate environment)
