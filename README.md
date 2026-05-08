@@ -1,5 +1,5 @@
 # Synaptome architecture shapes regional dynamics in the mouse brain
-This repository contains code and data in support of "Synaptome architecture shapes regional dynamics in the mouse brain", available as a preprint on [bioRxiv](https://doi.org/10.1101/2025.01.24.634803).
+This repository contains code and data in support of "Synapse types are spatially associated with regional hemodynamics in the mouse brain", available at [PLOS Biology](https://doi.org/10.1371/journal.pbio.3003637).
 Most of the code was written in Python 3.8.10, with some of the gene ontology analyses being done in Matlab R2022a.
 Below, I describe all the folders and files in detail.
 
